@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Mining{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h5>Mine Block</h5>
+    </div>
+    <div class="card-body">
+        <form id="mineForm">
+            <div class="mb-3">
+                <label for="miner_address" class="form-label">Miner Address</label>
+                <select class="form-control" id="miner_address" required>
+                    <option value="">Select Miner</option>
+                    <option value="Node0">Node0</option>
+                    <option value="Node1">Node1</option>
+                    <option value="Node2">Node2</option>
+                    <option value="Node3">Node3</option>
+                    <option value="Node4">Node4</option>
+                    <option value="Node5">Node5</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Mine Block</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('mineForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            miner_address: document.getElementById('miner_address').value
+        };
+        
+        try {
+            const response = await fetch('/mine', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            alert(result.message);
+        } catch (error) {
+            alert('Error mining block');
+        }
+    });
+</script>
+{% endblock %}

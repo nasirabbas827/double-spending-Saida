@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Attacks{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h5>Perform Double-Spending Attack</h5>
+    </div>
+    <div class="card-body">
+        <form id="attackForm">
+            <div class="mb-3">
+                <label for="attack_sender" class="form-label">Sender</label>
+                <select class="form-control" id="attack_sender" required>
+                    <option value="">Select Sender</option>
+                    <option value="Node0">Node0</option>
+                    <option value="Node1">Node1</option>
+                    <option value="Node2">Node2</option>
+                    <option value="Node3">Node3</option>
+                    <option value="Node4">Node4</option>
+                    <option value="Node5">Node5</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="attack_receiver" class="form-label">Receiver</label>
+                <select class="form-control" id="attack_receiver" required>
+                    <option value="">Select Receiver</option>
+                    <option value="Node0">Node0</option>
+                    <option value="Node1">Node1</option>
+                    <option value="Node2">Node2</option>
+                    <option value="Node3">Node3</option>
+                    <option value="Node4">Node4</option>
+                    <option value="Node5">Node5</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="attack_amount" class="form-label">Amount</label>
+                <input type="number" class="form-control" id="attack_amount" required>
+            </div>
+            <button type="submit" class="btn btn-danger">Execute Attack</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('attackForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            sender: document.getElementById('attack_sender').value,
+            receiver: document.getElementById('attack_receiver').value,
+            amount: document.getElementById('attack_amount').value
+        };
+        
+        try {
+            const response = await fetch('/attack', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            alert(`${result.message}\nSuccess: ${result.success}\nSuccess Rate: ${(result.success_rate * 100).toFixed(2)}%`);
+            document.getElementById('attackForm').reset();
+        } catch (error) {
+            alert('Error performing attack');
+        }
+    });
+</script>
+{% endblock %}

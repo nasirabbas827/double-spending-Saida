@@ -1,0 +1,5 @@
+Type,Timestamp,Sender,Receiver,Amount
+Public,1760344551.0465186,Node5,Node2,33.0
+Private,1760344551.0465186,Node5,Node5,33.0
+Public,1760344618.1394606,Node5,Node1,33.0
+Private,1760344618.1394606,Node5,Node5,33.0

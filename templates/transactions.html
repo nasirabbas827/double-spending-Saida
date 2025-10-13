@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5>Create Transaction</h5>
+    </div>
+    <div class="card-body">
+        <form id="transactionForm" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="sender" class="form-label">Sender</label>
+                <select class="form-control" id="sender" required>
+                    <option value="">Select Sender</option>
+                    <option value="Node0">Node0</option>
+                    <option value="Node1">Node1</option>
+                    <option value="Node2">Node2</option>
+                    <option value="Node3">Node3</option>
+                    <option value="Node4">Node4</option>
+                    <option value="Node5">Node5</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="receiver" class="form-label">Receiver</label>
+                <select class="form-control" id="receiver" required>
+                    <option value="">Select Receiver</option>
+                    <option value="Node0">Node0</option>
+                    <option value="Node1">Node1</option>
+                    <option value="Node2">Node2</option>
+                    <option value="Node3">Node3</option>
+                    <option value="Node4">Node4</option>
+                    <option value="Node5">Node5</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount</label>
+                <input type="number" class="form-control" id="amount" required>
+            </div>
+            <button type="submit" class="btn btn-success">Submit Transaction</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            sender: document.getElementById('sender').value,
+            receiver: document.getElementById('receiver').value,
+            amount: document.getElementById('amount').value
+        };
+        
+        try {
+            const response = await fetch('/transaction/new', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            alert(result.message);
+            document.getElementById('transactionForm').reset();
+        } catch (error) {
+            alert('Error submitting transaction');
+        }
+    });
+</script>
+{% endblock %}

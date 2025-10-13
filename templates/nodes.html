@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Network Nodes</h2>
+<button id="refreshNodes" class="btn btn-primary mb-3">Refresh Nodes</button>
+<div id="nodesOutput" class="bg-light p-3 border rounded"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('refreshNodes').addEventListener('click', async () => {
+    const res = await fetch('/nodes');
+    const data = await res.json();
+    const container = document.getElementById('nodesOutput');
+    container.innerHTML = '';
+    data.nodes.forEach(node => {
+        container.innerHTML += `
+            <div class="p-2 mb-2 border rounded ${node.is_malicious ? 'bg-danger-subtle' : 'bg-success-subtle'}">
+                <strong>Node ID:</strong> ${node.node_id}<br>
+                <strong>Type:</strong> ${node.is_malicious ? 'Malicious' : 'Honest'}<br>
+                <strong>Hash Rate:</strong> ${node.hash_rate}
+            </div>
+        `;
+    });
+    container.innerHTML += `<p><strong>Total Nodes:</strong> ${data.total_nodes}</p>`;
+});
+</script>
+{% endblock %}

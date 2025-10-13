@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5>Blockchain Status</h5>
+            </div>
+            <div class="card-body">
+                <pre id="chainOutput" class="bg-light p-3 rounded overflow-auto"></pre>
+                <button onclick="fetchChain()" class="btn btn-primary mt-2">Refresh Chain</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5>Network Nodes</h5>
+            </div>
+            <div class="card-body">
+                <div id="nodesOutput" class="mb-3"></div>
+                <button onclick="fetchNodes()" class="btn btn-info">Refresh Nodes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-warning text-dark">
+        <h5>Attack Statistics</h5>
+    </div>
+    <div class="card-body">
+        <pre id="statsOutput" class="bg-light p-3 rounded overflow-auto"></pre>
+        <button onclick="fetchStats()" class="btn btn-warning">Refresh Stats</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Fetch blockchain data
+    function fetchChain() {
+        fetch('/chain')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('chainOutput').textContent = JSON.stringify(data, null, 2);
+            });
+    }
+
+    // Fetch nodes data
+    function fetchNodes() {
+        fetch('/nodes')
+            .then(response => response.json())
+            .then(data => {
+                let nodesHTML = '';
+                data.nodes.forEach(node => {
+                    nodesHTML += `
+                        <div class="p-3 mb-2 ${node.is_malicious ? 'bg-danger-subtle' : 'bg-success-subtle'} rounded">
+                            <strong>Node ${node.node_id}</strong>: 
+                            ${node.is_malicious ? 'Malicious' : 'Honest'} (Hash Rate: ${node.hash_rate})
+                        </div>`;
+                });
+                document.getElementById('nodesOutput').innerHTML = nodesHTML + 
+                    `<p class="mt-2"><strong>Total Nodes:</strong> ${data.total_nodes}</p>`;
+            });
+    }
+
+    // Fetch attack stats
+    function fetchStats() {
+        fetch('/stats')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('statsOutput').textContent = JSON.stringify(data, null, 2);
+            });
+    }
+
+    // Load initial data
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchChain();
+        fetchNodes();
+        fetchStats();
+    });
+</script>
+{% endblock %}
